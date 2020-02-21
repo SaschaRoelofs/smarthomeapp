@@ -21,7 +21,7 @@ const App = () => {
   return (
     <View>
       <Text>
-        Hello World
+        Penis
       </Text>
     </View>
   );

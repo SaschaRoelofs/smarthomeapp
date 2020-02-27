@@ -3,31 +3,54 @@ import { View, TextInput, StyleSheet, TouchableOpacity, Text } from 'react-nativ
 
 import Firebase from '../components/Firebase'
 
-function SignupScreen({navigation}) {
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
+function SignupScreen({ navigation }) {
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('')
 
 
     handleSignUp = () => {
+
+        // storeEmail();
+        // storePassword();
+        // console.log(getUsername());
+
         Firebase.auth()
-            .createUserWithEmailAndPassword(email, password)
+            .createUserWithEmailAndPassword(username, password)
             .then(() => navigation.navigate('DashboardScreen'))
             .catch(error => console.log(error))
+
+
     }
+
+    // storeEmail = async (username) => {
+
+    //     try {
+    //         await AsyncStorage.setItem('@username', username )
+    //     } catch (e) {
+    //         // save error
+    //     }
+
+    //     console.log('Done.')
+    // }
+
+    // storePassword = async (password) => {
+    //     try {
+    //         await AsyncStorage.setItem('@password', password )
+    //     } catch (e) {
+    //         // save error
+    //     }
+
+    //     console.log('Done.')
+    // }
+
+
 
     return (
         <View style={styles.container}>
             <TextInput
                 style={styles.inputBox}
-                value={name}
-                onChangeText={name => setName(name)}
-                placeholder='Full Name'
-            />
-            <TextInput
-                style={styles.inputBox}
-                value={email}
-                onChangeText={email => setEmail(email)}
+                value={username}
+                onChangeText={username => setUsername(username)}
                 placeholder='Email'
                 autoCapitalize='none'
             />

@@ -9,17 +9,14 @@ const DashboardScreen = ({ navigation }) => {
     const [items, setItems] = useState([]);
 
     useEffect(() => {
-        // const currentUser = Firebase.auth().currentUser
-        // console.log(currentUser.email);
-        axios.get('http://5.181.50.205:4000/data-handler?users=sascha@web.de') //+ currentUser.email)
+        const currentUser = Firebase.auth().currentUser
+        axios.get('http://5.181.50.205:4000/data-handler?users=' + currentUser.email)
             .then((response) => {
                 setItems(response.data)
             })
             .catch((error) => {
                 console.error(error);
             })
-        
-        console.log(items)
     } )
 
      const onPressHandler = (devicekey, state) =>  {
@@ -31,6 +28,7 @@ const DashboardScreen = ({ navigation }) => {
                console.log(response.data);
         });
      }
+     
 
     return (
         <View>

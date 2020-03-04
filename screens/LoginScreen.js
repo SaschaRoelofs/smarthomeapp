@@ -2,54 +2,31 @@ import React, { useState, useEffect } from 'react'
 import { View, TextInput, StyleSheet, TouchableOpacity, Text, Button, AsyncStorage } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import Firebase from '../components/Firebase'
-import { set } from 'react-native-reanimated';
+
 
 function LoginScreen({ navigation }) {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
 
     useEffect(() => {
-        // if (username != null && password != null){
-        //     Firebase.auth().signInWithEmailAndPassword(username, password);
-        // }
-        
-
+        console.log("UseEffect")
+        //autoLogin()
+        Firebase.auth().onAuthStateChanged((user) => {
+			if (user) {
+				navigation.navigate('DashboardScreen')
+			} else {
+				console.log("Fehler")
+			}
+		});
     })
 
-
-    handleLogin = () => {
+    const handleLogin = () => {
         Firebase.auth()
             .signInWithEmailAndPassword(username, password)
             .then(() => navigation.navigate('DashboardScreen'))
             .catch(error => console.log(error))
 
     }
-
-
-
-    // getUsername = async () => {
-    //     try {
-    //       const email = await AsyncStorage.getItem('@username')
-    //       setUsername(email);
-    //     } catch(e) {
-    //       // read error
-    //     }
-      
-    //     console.log('GetUsername.')
-      
-    //   }
-
-    //   getPassword = async () => {
-    //     try {
-    //       const pw = await AsyncStorage.getItem('@password')
-    //       setPassword(pw);
-    //     } catch(e) {
-    //       // read error
-    //     }
-      
-    //     console.log('GetPassword.')
-      
-    //   }
 
 
     return (

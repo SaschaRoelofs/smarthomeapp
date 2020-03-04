@@ -8,11 +8,7 @@ function SignupScreen({ navigation }) {
     const [password, setPassword] = useState('')
 
 
-    handleSignUp = () => {
-
-        // storeEmail();
-        // storePassword();
-        // console.log(getUsername());
+    const handleSignUp = () => {
 
         Firebase.auth()
             .createUserWithEmailAndPassword(username, password)
@@ -21,28 +17,6 @@ function SignupScreen({ navigation }) {
 
 
     }
-
-    // storeEmail = async (username) => {
-
-    //     try {
-    //         await AsyncStorage.setItem('@username', username )
-    //     } catch (e) {
-    //         // save error
-    //     }
-
-    //     console.log('Done.')
-    // }
-
-    // storePassword = async (password) => {
-    //     try {
-    //         await AsyncStorage.setItem('@password', password )
-    //     } catch (e) {
-    //         // save error
-    //     }
-
-    //     console.log('Done.')
-    // }
-
 
 
     return (

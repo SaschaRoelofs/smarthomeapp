@@ -1,8 +1,8 @@
 platform :ios, '9.0'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-target 'UserLogin' do
-  # Pods for UserLogin
+target 'SMart' do
+  # Pods for SMart
   pod 'FBLazyVector', :path => "../node_modules/react-native/Libraries/FBLazyVector"
   pod 'FBReactNativeSpec', :path => "../node_modules/react-native/Libraries/FBReactNativeSpec"
   pod 'RCTRequired', :path => "../node_modules/react-native/Libraries/RCTRequired"
@@ -34,7 +34,7 @@ target 'UserLogin' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
-  target 'UserLoginTests' do
+  target 'SMartTests' do
     inherit! :search_paths
     # Pods for testing
   end
@@ -42,10 +42,10 @@ target 'UserLogin' do
   use_native_modules!
 end
 
-target 'UserLogin-tvOS' do
-  # Pods for UserLogin-tvOS
+target 'SMart-tvOS' do
+  # Pods for SMart-tvOS
 
-  target 'UserLogin-tvOSTests' do
+  target 'SMart-tvOSTests' do
     inherit! :search_paths
     # Pods for testing
   end

@@ -1,4 +1,4 @@
-package com.userlogin;
+package com.smart;
 
 import android.app.Application;
 import android.content.Context;

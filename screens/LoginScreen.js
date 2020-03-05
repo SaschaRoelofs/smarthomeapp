@@ -4,29 +4,34 @@ import { useNavigation } from '@react-navigation/native';
 import Firebase from '../components/Firebase'
 
 
+
 function LoginScreen({ navigation }) {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
 
+    const auth = Firebase.auth()
+
     useEffect(() => {
         console.log("UseEffect")
-        //autoLogin()
-        Firebase.auth().onAuthStateChanged((user) => {
-			if (user) {
-				navigation.navigate('DashboardScreen')
-			} else {
-				console.log("Fehler")
-			}
-		});
+
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                navigation.navigate('DashboardScreen')
+            } else {
+                console.log("Fehler")
+            }
+        });
+
     })
 
     const handleLogin = () => {
-        Firebase.auth()
+        auth
             .signInWithEmailAndPassword(username, password)
             .then(() => navigation.navigate('DashboardScreen'))
             .catch(error => console.log(error))
 
     }
+
 
 
     return (
@@ -55,6 +60,8 @@ function LoginScreen({ navigation }) {
 
         </View>
     )
+
+
 
 }
 

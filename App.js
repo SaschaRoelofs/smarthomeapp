@@ -6,6 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import DashboardScreen from './screens/DashboardScreen'
 import LoginScreen from './screens/LoginScreen'
 import SignupScreen from './screens/SignupScreen'
+
 import { Switch } from 'react-native-gesture-handler';
 
 const Stack = createStackNavigator();

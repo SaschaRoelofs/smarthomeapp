@@ -8,11 +8,12 @@ const DashboardScreen = ({ navigation }) => {
 
     const [items, setItems] = useState([]);
 
+    const auth = Firebase.auth()
+    
     useEffect(() => {
-        Firebase.auth().onAuthStateChanged((user) => {
+        auth.onAuthStateChanged((user) => {
             if (user) {
-                const currentUser = Firebase.auth().currentUser
-                axios.get('http://5.181.50.205:4000/data-handler?users=' + currentUser.email)
+                axios.get('http://5.181.50.205:4000/data-handler?users=' + auth.currentUser.email)
                     .then((response) => {
                         setItems(response.data)
                     })
@@ -29,7 +30,7 @@ const DashboardScreen = ({ navigation }) => {
     const onPressHandler = (devicekey, state) => {
         axios.patch("http://5.181.50.205:4000/data-handler", {
             "devicekey": devicekey,
-            "state": (state == 0) ? 1 : 0
+            "state": (state) ? 0 : 1
         })
             .then((response) => {
                 console.log(response.data);
@@ -37,7 +38,7 @@ const DashboardScreen = ({ navigation }) => {
     }
 
     const signOutHandler = () => {
-        Firebase.auth().signOut()
+        auth.signOut()
         navigation.navigate('LoginScreen')
     }
 
@@ -55,6 +56,7 @@ const DashboardScreen = ({ navigation }) => {
             </ScrollView>
         </View>
     )
+
 }
 
 export default DashboardScreen

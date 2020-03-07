@@ -1,15 +1,18 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Component } from 'react'
 import axios from 'axios';
-import { StyleSheet, Text, View, Button, FlatList, SafeAreaView, ScrollView } from 'react-native'
+import { Image, StyleSheet, Text, View, Button, FlatList, SafeAreaView, ScrollView } from 'react-native'
 import Firebase from '../components/Firebase';
 import { TouchableHighlight, TouchableNativeFeedback } from 'react-native-gesture-handler';
+import DeviceButton from '../components/DeviceButton';
+import Sandbox from '../components/Sandbox';
+
 
 const DashboardScreen = ({ navigation }) => {
 
     const [items, setItems] = useState([]);
 
     const auth = Firebase.auth()
-    
+
     useEffect(() => {
         auth.onAuthStateChanged((user) => {
             if (user) {
@@ -28,9 +31,10 @@ const DashboardScreen = ({ navigation }) => {
     })
 
     const onPressHandler = (devicekey, state) => {
+        let stateLap = (state) ? 0 : 1
         axios.patch("http://5.181.50.205:4000/data-handler", {
             "devicekey": devicekey,
-            "state": (state) ? 0 : 1
+            "state": stateLap
         })
             .then((response) => {
                 console.log(response.data);
@@ -42,37 +46,40 @@ const DashboardScreen = ({ navigation }) => {
         navigation.navigate('LoginScreen')
     }
 
+
+
     return (
-        <View>
-            <Button title="Ausloggen" onPress={() => signOutHandler()} />
-            <ScrollView>
-                {items.map(item => (
-                    <View key={item.devicekey}>
-                        <TouchableNativeFeedback onPress={() => onPressHandler(item.devicekey, item.state)}>
-                            <Text style={styles.item}>{item.state}</Text>
+        <View style={styles.MainContainer}>
+            {/* <Button title="Ausloggen" onPress={() => signOutHandler()} /> */}
+            <FlatList
+                data={items}
+                renderItem={({ item }) => (
+                    <View style={styles.row}>
+                        <TouchableNativeFeedback  onPress={() => onPressHandler(item.devicekey, item.state)}>
+                            <DeviceButton state={item.state} devicename={item.devicename} />
                         </TouchableNativeFeedback>
                     </View>
-                ))}
-            </ScrollView>
+                )}
+                //Setting the number of column
+                numColumns={2}
+                keyExtractor={item => item.devicekey}
+            />
         </View>
-    )
-
+    );
 }
 
 export default DashboardScreen
 
 const styles = StyleSheet.create({
-    container: {
+    MainContainer: {
         flex: 1,
-        //marginTop: 10,
+        flexDirection: "column"
     },
-    item: {
-        backgroundColor: '#f9c2ff',
-        padding: 20,
-        marginVertical: 8,
-        marginHorizontal: 16,
-    },
-    title: {
-        fontSize: 32,
-    },
+    row: {
+        flex: 1, 
+        flexDirection: "row", 
+        justifyContent: "space-evenly", 
+        alignItems: "center" 
+    }
+
 });

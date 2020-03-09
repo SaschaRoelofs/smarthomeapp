@@ -6,18 +6,20 @@ import { createStackNavigator } from '@react-navigation/stack';
 import DashboardScreen from './screens/DashboardScreen'
 import LoginScreen from './screens/LoginScreen'
 import SignupScreen from './screens/SignupScreen'
-
-import { Switch } from 'react-native-gesture-handler';
+import SetupScreen1 from './screens/SetupScreen1';
 
 const Stack = createStackNavigator();
 
 function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="LoginScreen">
+      <Stack.Navigator screenOptions={{
+        headerShown: false
+      }} initialRouteName="LoginScreen">
         <Stack.Screen name="SignupScreen" component={SignupScreen} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
         <Stack.Screen name="DashboardScreen" component={DashboardScreen} />
+        <Stack.Screen name="SetupScreen1" component={SetupScreen1} />
       </Stack.Navigator>
     </NavigationContainer>
   );

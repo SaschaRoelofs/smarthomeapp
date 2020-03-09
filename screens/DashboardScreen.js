@@ -1,8 +1,9 @@
 import React, { useState, useEffect, Component } from 'react'
 import axios from 'axios';
-import { Image, StyleSheet, Text, View, Button, FlatList, SafeAreaView, ScrollView } from 'react-native'
+import ModalDropdown from 'react-native-modal-dropdown';
+import { Image, StyleSheet, Text, View, Button, FlatList, SafeAreaView, ScrollView, Picker } from 'react-native'
 import Firebase from '../components/Firebase';
-import { TouchableHighlight, TouchableNativeFeedback } from 'react-native-gesture-handler';
+import { TouchableHighlight, TouchableNativeFeedback, TouchableOpacity } from 'react-native-gesture-handler';
 import DeviceButton from '../components/DeviceButton';
 import Sandbox from '../components/Sandbox';
 
@@ -10,6 +11,7 @@ import Sandbox from '../components/Sandbox';
 const DashboardScreen = ({ navigation }) => {
 
     const [items, setItems] = useState([]);
+    const [picker, setPicker] = useState()
 
     const auth = Firebase.auth()
 
@@ -46,22 +48,40 @@ const DashboardScreen = ({ navigation }) => {
         navigation.navigate('LoginScreen')
     }
 
-
+    const _handleOnSelect = (value) => {
+        console.log(value)
+    }
 
     return (
-        <View style={styles.MainContainer}>
-            {/* <Button title="Ausloggen" onPress={() => signOutHandler()} /> */}
+        <View style={styles.container}>
+            <View style={styles.topBar}>
+                <Text style={styles.title}>Deine Geräte</Text>
+                {/* <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('SetupScreen1')}>
+                    <Text>+</Text>
+                </TouchableOpacity> */}
+                <ModalDropdown 
+                        options={['Device', 'Routine']}
+                        onSelect={(value) => console.log(value)}
+                        >
+                    <View style={styles.addButton}>
+                        <Text>+</Text>
+                    </View>
+                </ModalDropdown>
+            </View>
+
+
+
             <FlatList
                 data={items}
                 renderItem={({ item }) => (
                     <View style={styles.row}>
-                        <TouchableNativeFeedback  onPress={() => onPressHandler(item.devicekey, item.state)}>
+                        <TouchableNativeFeedback onPress={() => onPressHandler(item.devicekey, item.state)}>
                             <DeviceButton state={item.state} devicename={item.devicename} />
                         </TouchableNativeFeedback>
                     </View>
                 )}
-                //Setting the number of column
                 numColumns={2}
+                showsVerticalScrollIndicator={false}
                 keyExtractor={item => item.devicekey}
             />
         </View>
@@ -71,15 +91,32 @@ const DashboardScreen = ({ navigation }) => {
 export default DashboardScreen
 
 const styles = StyleSheet.create({
-    MainContainer: {
+    container: {
         flex: 1,
         flexDirection: "column"
     },
     row: {
-        flex: 1, 
-        flexDirection: "row", 
-        justifyContent: "space-evenly", 
-        alignItems: "center" 
-    }
+        flex: 1,
+        flexDirection: "row",
+        justifyContent: "space-evenly",
+    },
+    title: {
+        fontSize: 24,
+        paddingHorizontal: 16,
+        paddingTop: 12
+    },
+    topBar: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        padding: 5,
+
+
+    },
+    addButton: {
+        width: 50,
+        height: 50,
+        padding: 18,
+        backgroundColor: '#fab'
+    },
 
 });

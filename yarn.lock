@@ -6903,6 +6903,11 @@ react-is@^16.12.0, react-is@^16.7.0, react-is@^16.8.1, react-is@^16.8.4, react-i
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.12.0.tgz#2cc0fe0fba742d97fd527c42a13bec4eeb06241c"
   integrity sha512-rPCkf/mWBtKc97aLL9/txD8DZdemK0vkA3JMLShjlJB3Pj3s+lpf1KaBzMfQrAmhMQB0n1cU/SUGgKKBCe837Q==
 
+react-native-android-wifi@^0.0.41:
+  version "0.0.41"
+  resolved "https://registry.yarnpkg.com/react-native-android-wifi/-/react-native-android-wifi-0.0.41.tgz#29f5f558a57f53768899c6c0cea8ac87171ce731"
+  integrity sha512-hbyUwSui4TANpzCO2J1v3wmXiYK6xLgBhB8EpGjIvOd47RNhsBV9makiYVEkM5xeyKRnDHbwZaD6Ju4sFLrqMA==
+
 react-native-axios@^0.17.1:
   version "0.17.1"
   resolved "https://registry.yarnpkg.com/react-native-axios/-/react-native-axios-0.17.1.tgz#44292950aa07ceee2e4bd349106ff773bef81f8f"
@@ -7082,6 +7087,11 @@ react-native-vector-icons@^6.6.0:
     lodash "^4.0.0"
     prop-types "^15.6.2"
     yargs "^13.2.2"
+
+react-native-wifi-reborn@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/react-native-wifi-reborn/-/react-native-wifi-reborn-2.4.0.tgz#d5b9d8f3a6deba1cc4e2c0bcd17907f962599731"
+  integrity sha512-jp6BoXUBiGl+aR3QlEBHKbkEAy6eLv7rFPl4f1zUkcVXsWaGfTCw0JF2HcT+c6NLw5UkXmZNDB0WuxnvgU5FJg==
 
 react-native@0.61.5:
   version "0.61.5"
@@ -8581,6 +8591,21 @@ wide-align@^1.1.0:
   integrity sha512-QGkOQc8XL6Bt5PwnsExKBPuMKBxnGxWWW3fU55Xt4feHozMUhdUMaBCk290qpm/wG5u/RSKzwdAC4i51YigihA==
   dependencies:
     string-width "^1.0.2 || 2"
+
+wifi-name@^3.0.0:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/wifi-name/-/wifi-name-3.1.1.tgz#f3d9e97e2e716cf73c1840b744be9c591796519a"
+  integrity sha512-8BM51HTio1vYRQYbAovVNDHfRHDheJRIp7bsxVmWQEF0zL9XxA0QaklIxaPEtBf9VRCzFvkmVzoMG7A51hgoAg==
+  dependencies:
+    execa "^0.7.0"
+
+wifi-password@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/wifi-password/-/wifi-password-3.0.1.tgz#440c3d5a2bd885026241a91fb7083b9e9d49632b"
+  integrity sha512-cPz+W+7r3xm9kyfsy3OmvpVSvZ/eL90MWQXzOfWBJ1/YvZ5sEWZ7roTssOhwQWSyyuWPn0Ip6RvALEjGNlujOA==
+  dependencies:
+    execa "^0.7.0"
+    wifi-name "^3.0.0"
 
 window-size@^0.1.4:
   version "0.1.4"

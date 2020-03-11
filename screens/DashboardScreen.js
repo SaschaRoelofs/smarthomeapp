@@ -1,12 +1,12 @@
-import React, { useState, useEffect, Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios';
 import ModalDropdown from 'react-native-modal-dropdown';
-import { Image, StyleSheet, Text, View, Button, FlatList, SafeAreaView, ScrollView, Picker } from 'react-native'
+import { Image, StyleSheet, Text, View, Button, FlatList } from 'react-native'
 import Firebase from '../components/Firebase';
-import { TouchableHighlight, TouchableNativeFeedback, TouchableOpacity } from 'react-native-gesture-handler';
+import { TouchableNativeFeedback } from 'react-native-gesture-handler';
 import DeviceButton from '../components/DeviceButton';
-import Sandbox from '../components/Sandbox';
 
+//const wifiPassword = require('wifi-password');
 
 const DashboardScreen = ({ navigation }) => {
 
@@ -49,20 +49,19 @@ const DashboardScreen = ({ navigation }) => {
     }
 
     const _handleOnSelect = (value) => {
-        console.log(value)
+        if (value == 0) {
+            navigation.navigate("SetupScreen1")
+        }
     }
 
     return (
         <View style={styles.container}>
             <View style={styles.topBar}>
                 <Text style={styles.title}>Deine Geräte</Text>
-                {/* <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('SetupScreen1')}>
-                    <Text>+</Text>
-                </TouchableOpacity> */}
-                <ModalDropdown 
-                        options={['Device', 'Routine']}
-                        onSelect={(value) => console.log(value)}
-                        >
+                <ModalDropdown
+                    options={['Device', 'Routine']}
+                    onSelect={(value) => _handleOnSelect(value)}
+                >
                     <View style={styles.addButton}>
                         <Text>+</Text>
                     </View>

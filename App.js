@@ -8,10 +8,12 @@ import LoginScreen from './screens/LoginScreen'
 import SignupScreen from './screens/SignupScreen'
 import SetupScreen1 from './screens/SetupScreen1';
 
+
 const Stack = createStackNavigator();
 
 function App() {
   return (
+
     <NavigationContainer>
       <Stack.Navigator screenOptions={{
         headerShown: false
@@ -22,6 +24,7 @@ function App() {
         <Stack.Screen name="SetupScreen1" component={SetupScreen1} />
       </Stack.Navigator>
     </NavigationContainer>
+
   );
 }
 

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios';
+import NetInfo from "@react-native-community/netinfo";
+import { useNetInfo } from "@react-native-community/netinfo";
 import ModalDropdown from 'react-native-modal-dropdown';
 import { Image, StyleSheet, Text, View, Button, FlatList } from 'react-native'
 import Firebase from '../components/Firebase';
@@ -13,24 +15,33 @@ const DashboardScreen = ({ navigation }) => {
     const [items, setItems] = useState([]);
     const [picker, setPicker] = useState()
 
+
     const auth = Firebase.auth()
+    const netInfo = useNetInfo();
 
-    useEffect(() => {
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                axios.get('http://5.181.50.205:4000/data-handler?users=' + auth.currentUser.email)
-                    .then((response) => {
-                        setItems(response.data)
-                    })
-                    .catch((error) => {
-                        console.error(error);
-                    })
-            } else {
-                console.log("Fehler Dashboard")
-            }
-        });
 
-    })
+    // useEffect(() => {
+    //     const intervalId = setInterval(() => {
+    //         //console.log(netInfo.isConnected)
+    //         auth.onAuthStateChanged((user) => {
+    //             if (user) {
+    //                 axios.get('http://5.181.50.205:4000/data-handler?users=' + auth.currentUser.email)
+    //                     .then((response) => {
+    //                         setItems(response.data)
+    //                     })
+    //                     .catch((error) => {
+    //                         console.error(error);
+    //                     })
+    //             } else {
+    //                 console.log("Fehler Dashboard")
+    //             }
+    //         });
+
+    //     }, 1000)
+
+    //     return () => clearInterval(intervalId);
+
+    // }, [])
 
     const onPressHandler = (devicekey, state) => {
         let stateLap = (state) ? 0 : 1
@@ -41,11 +52,6 @@ const DashboardScreen = ({ navigation }) => {
             .then((response) => {
                 console.log(response.data);
             });
-    }
-
-    const signOutHandler = () => {
-        auth.signOut()
-        navigation.navigate('LoginScreen')
     }
 
     const _handleOnSelect = (value) => {
@@ -119,3 +125,4 @@ const styles = StyleSheet.create({
     },
 
 });
+

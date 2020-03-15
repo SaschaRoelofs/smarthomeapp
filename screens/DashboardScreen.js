@@ -15,33 +15,29 @@ const DashboardScreen = ({ navigation }) => {
     const [items, setItems] = useState([]);
     const [picker, setPicker] = useState()
 
-
     const auth = Firebase.auth()
-    const netInfo = useNetInfo();
 
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            // auth.onAuthStateChanged((user) => {
+            //     if (user) {
+            //         axios.get('http://5.181.50.205:4000/data-handler?users=' + auth.currentUser.email)
+            //             .then((response) => {
+            //                 setItems(response.data)
+            //             })
+            //             .catch((error) => {
+            //                 console.error(error);
+            //             })
+            //     } else {
+            //         console.log("Fehler Dashboard")
+            //     }
+            // });
 
-    // useEffect(() => {
-    //     const intervalId = setInterval(() => {
-    //         //console.log(netInfo.isConnected)
-    //         auth.onAuthStateChanged((user) => {
-    //             if (user) {
-    //                 axios.get('http://5.181.50.205:4000/data-handler?users=' + auth.currentUser.email)
-    //                     .then((response) => {
-    //                         setItems(response.data)
-    //                     })
-    //                     .catch((error) => {
-    //                         console.error(error);
-    //                     })
-    //             } else {
-    //                 console.log("Fehler Dashboard")
-    //             }
-    //         });
+        }, 1000)
 
-    //     }, 1000)
+        return () => clearInterval(intervalId);
 
-    //     return () => clearInterval(intervalId);
-
-    // }, [])
+    }, [])
 
     const onPressHandler = (devicekey, state) => {
         let stateLap = (state) ? 0 : 1

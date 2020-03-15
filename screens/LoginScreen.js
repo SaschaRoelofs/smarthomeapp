@@ -14,7 +14,7 @@ function LoginScreen({ navigation }) {
     useEffect(() => {
         console.log("UseEffect")
 
-        auth.onAuthStateChanged((user) => {
+        auth.onIdTokenChanged((user) => {
             if (user) {
                 navigation.navigate('DashboardScreen')
             } else {

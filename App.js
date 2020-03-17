@@ -48,7 +48,7 @@ export default () => {
 
   useEffect(() => {
     Firebase.auth().onIdTokenChanged((user) => {
-      console.log(user)
+      //console.log(user)
       if (user) {
         setIsLoading(false);
         setUserToken(user)

@@ -28,7 +28,7 @@ const SetupScreen1 = ({ navigation }) => {
         },
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('You can use WifiManager');
+        console.log('You can use Location');
       } else {
         console.log('Location permission denied');
       }
@@ -50,7 +50,7 @@ const SetupScreen1 = ({ navigation }) => {
         },
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('You can use WifiManager');
+        console.log('You can use Settings');
       } else {
         console.log('Settings permission denied');
       }
@@ -77,6 +77,7 @@ const SetupScreen1 = ({ navigation }) => {
           setKey(1)
         } else {
           console.log("Connection failed timeout")
+          setTrys(trys++)
         }
       }
       break;
@@ -102,7 +103,8 @@ const SetupScreen1 = ({ navigation }) => {
         //setDevicekey(res.data["devicekey"])
         console.log(devicekey)
         WifiManager.forceWifiUsage(false);
-        //navigation.navigate("SetupScreen_2")
+        WifiManager.disconnect()
+        navigation.navigate("SetupScreen_2")
 
       })
         .catch((error) => {
@@ -110,67 +112,13 @@ const SetupScreen1 = ({ navigation }) => {
             Alert.alert('Something went wrong', 'Kindly check if the device is connected to stable cellular data plan or WiFi.');
           }
           WifiManager.forceWifiUsage(false);
+          
         });
       break;
     default:
       break;
   }
 
-  // const connectToWifi = async () => {
-  //   try {
-  //     await WifiManager.connectToProtectedSSID(
-  //       "SMHome",
-  //       "12345678",
-  //       false,
-  //     );
-  //     console.log('Connected successfully to SMHome!');
-  //     getDevicekey()
-  //     await WifiManager.forceWifiUsage(true)
-
-
-  //   } catch (error) {
-  //     if (trys < 10) {
-  //       console.log('Connection failed!');
-  //       connectToWifi()
-
-  //     } else {
-  //       console.log("Connection failed timeout")
-
-  //     }
-
-  //   }
-  // }
-
-  // const getDevicekey = () => {
-  //   console.log("GetDevicekey function")
-  //   WifiManager.isEnabled(isEnabled => {
-  //     console.log("Wifi connetction" + isEnabled)
-  //     WifiManager.forceWifiUsage()
-  //   });
-
-  //   setTimeout(() => {
-  //     console.log("Timeout for 5 sec")
-  //   }, 5000);
-  //   axios.post('http://192.168.1.1:80/body', {
-  //     "SSID": SSID,
-  //     "PW": PW
-  //   }).then((res) => {
-  //     // WifiManager.getBSSID((call) => {
-  //     //   setDevicekey(call)
-  //     // })
-  //     setDevicekey(res.data["devicekey"])
-  //     console.log(devicekey)
-  //     WifiManager.forceWifiUsage(false);
-  //     navigation.navigate("SetupScreen_2")
-
-  //   })
-  //     .catch((error) => {
-  //       if (error == 'Error: Network error') {
-  //         Alert.alert('Something went wrong', 'Kindly check if the device is connected to stable cellular data plan or WiFi.');
-  //       }
-  //       WifiManager.forceWifiUsage(false);
-  //     });
-  // }
 
   useEffect(() => {
     requestLocationPermission();

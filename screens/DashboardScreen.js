@@ -3,7 +3,7 @@ import axios from 'axios';
 import NetInfo from "@react-native-community/netinfo";
 import { useNetInfo } from "@react-native-community/netinfo";
 import ModalDropdown from 'react-native-modal-dropdown';
-import { Image, StyleSheet, Text, View, Button, FlatList } from 'react-native'
+import { Image, StyleSheet, Text, View, Button, FlatList, Picker } from 'react-native'
 import Firebase from '../components/Firebase';
 import { TouchableNativeFeedback } from 'react-native-gesture-handler';
 import DeviceButton from '../components/DeviceButton';
@@ -13,14 +13,17 @@ import DeviceButton from '../components/DeviceButton';
 const DashboardScreen = ({ navigation }) => {
 
     const [items, setItems] = useState([]);
-    const [picker, setPicker] = useState()
+    const [picker, setPicker] = useState(0)
 
     const auth = Firebase.auth()
+    
 
     useEffect(() => {
-        const isFocused = navigation.isFocused();
+        
         const intervalId = setInterval(() => {
+            const isFocused = navigation.isFocused();
             auth.onIdTokenChanged((user) => {
+                //console.log(isFocused)
                 if (user && isFocused) {
                     axios.get('http://5.181.50.205:4000/data-handler?users=' + auth.currentUser.email)
                         .then((response) => {
@@ -59,14 +62,24 @@ const DashboardScreen = ({ navigation }) => {
         <View style={styles.container}>
             <View style={styles.topBar}>
                 <Text style={styles.title}>Deine Geräte</Text>
-                <ModalDropdown
+                <Picker
+                    style={{ height: 50, width: 50 }}
+                    selectedValue={picker}
+                    onValueChange={(itemValue) => {
+                        setPicker(itemValue)
+                        _handleOnSelect(itemValue)
+                    }}>
+                    <Picker.Item label="Device" value="0" />
+                    <Picker.Item label="Routine" value="1" />
+                </Picker>
+                {/* <ModalDropdown
                     options={['Device', 'Routine']}
                     onSelect={(value) => _handleOnSelect(value)}
                 >
                     <View style={styles.addButton}>
                         <Text>+</Text>
                     </View>
-                </ModalDropdown>
+                </ModalDropdown> */}
             </View>
 
             <FlatList

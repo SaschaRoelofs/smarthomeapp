@@ -9,6 +9,7 @@ import LoginScreen from './screens/LoginScreen'
 import SignupScreen from './screens/SignupScreen'
 import SetupScreen1 from './screens/SetupScreen1'
 import SplashScreen from './screens/SplashScreen'
+import SetupScreen_2 from './screens/SetupScreen_2'
 
 
 
@@ -23,8 +24,9 @@ const AuthStackScreen = () => (
 const HomeStack = createStackNavigator();
 const HomeStackScreen = () => (
   <HomeStack.Navigator>
-    <HomeStack.Screen name="DashboardScreen" component={DashboardScreen} />
+    <HomeStack.Screen name="DashboardScreen" component={DashboardScreen} headerMode="none" />
     <HomeStack.Screen name="SetupScreen1" component={SetupScreen1} />
+    <HomeStack.Screen name="SetupScreen_2" component={SetupScreen_2} />
   </HomeStack.Navigator>
 );
 
@@ -45,14 +47,13 @@ export default () => {
   const [userToken, setUserToken] = React.useState(null);
 
   useEffect(() => {
-    console.log("UseEffect")
-
     Firebase.auth().onIdTokenChanged((user) => {
+      console.log(user)
       if (user) {
         setIsLoading(false);
         setUserToken(user)
       } else {
-        console.log("Fehler")
+        console.log("Fehler...")
         setIsLoading(true);
         setUserToken(user)
       }
@@ -60,15 +61,15 @@ export default () => {
 
   }, [])
 
-  if (isLoading) {
-    return <SplashScreen />;
-  }
+  // if (isLoading) {
+  //   return <SplashScreen />;
+  // }
 
   return (
 
-    <NavigationContainer>
-      <RootStackScreen userToken={userToken} />
-    </NavigationContainer>
+      <NavigationContainer>
+        <RootStackScreen userToken={userToken} />
+      </NavigationContainer>
 
   );
 };

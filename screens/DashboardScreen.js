@@ -8,7 +8,7 @@ import Firebase from '../components/Firebase';
 import { TouchableNativeFeedback } from 'react-native-gesture-handler';
 import DeviceButton from '../components/DeviceButton';
 
-//const wifiPassword = require('wifi-password');
+
 
 const DashboardScreen = ({ navigation }) => {
 
@@ -18,26 +18,25 @@ const DashboardScreen = ({ navigation }) => {
     const auth = Firebase.auth()
 
     useEffect(() => {
+        const isFocused = navigation.isFocused();
         const intervalId = setInterval(() => {
-            // auth.onAuthStateChanged((user) => {
-            //     if (user) {
-            //         axios.get('http://5.181.50.205:4000/data-handler?users=' + auth.currentUser.email)
-            //             .then((response) => {
-            //                 setItems(response.data)
-            //             })
-            //             .catch((error) => {
-            //                 console.error(error);
-            //             })
-            //     } else {
-            //         console.log("Fehler Dashboard")
-            //     }
-            // });
+            auth.onIdTokenChanged((user) => {
+                if (user && isFocused) {
+                    axios.get('http://5.181.50.205:4000/data-handler?users=' + auth.currentUser.email)
+                        .then((response) => {
+                            setItems(response.data)
+                        })
+                        .catch((error) => {
+                            console.error(error);
+                        })
+                }
+            });
 
         }, 1000)
 
         return () => clearInterval(intervalId);
 
-    }, [])
+    })
 
     const onPressHandler = (devicekey, state) => {
         let stateLap = (state) ? 0 : 1
@@ -69,8 +68,6 @@ const DashboardScreen = ({ navigation }) => {
                     </View>
                 </ModalDropdown>
             </View>
-
-
 
             <FlatList
                 data={items}

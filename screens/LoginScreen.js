@@ -11,23 +11,23 @@ function LoginScreen({ navigation }) {
 
     const auth = Firebase.auth()
 
-    useEffect(() => {
-        console.log("UseEffect")
+    // useEffect(() => {
+    //     console.log("UseEffect")
 
-        auth.onIdTokenChanged((user) => {
-            if (user) {
-                navigation.navigate('DashboardScreen')
-            } else {
-                console.log("Fehler")
-            }
-        });
+    //     auth.onIdTokenChanged((user) => {
+    //         if (user) {
+    //             navigation.navigate('DashboardScreen')
+    //         } else {
+    //             console.log("Fehler")
+    //         }
+    //     });
 
-    })
+    // })
 
     const handleLogin = () => {
         auth
             .signInWithEmailAndPassword(username, password)
-            .then(() => navigation.navigate('DashboardScreen'))
+            .then(() => navigation.push('DashboardScreen'))
             .catch(error => console.log(error))
 
     }

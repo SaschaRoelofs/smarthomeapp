@@ -5,24 +5,24 @@ import { StackActions } from '@react-navigation/native';
 import Firebase from '../components/Firebase'
 import axios from 'axios'
 
-const SetupScreen_2 = ({navigation}) => {
+const SetupScreen_2 = ({ navigation, route }) => {
     const [users, setUsers] = useState([])
     const [devicename, setDevicename] = useState('')
     const [deviceFunction, setDeviceFunction] = useState('garage')
+    const [devicekey, setDevicekey] = useState(navigation)
     const username = Firebase.auth().currentUser.email
+    const {devkey} = route.params
 
     const handleNext = () => {
-        console.log(users.value)
-        //setUsers([...users, {id: 0, value: username}])
-        //console.log("User: " + users )
+        console.log("Devicekey: " + JSON.stringify(devkey))
         console.log("Devicename: " + devicename)
         console.log("Function: " + deviceFunction)
 
         axios.post('http://5.181.50.205:4000/insert-device', {
-            "devicekey": "1381653156", //Richtigen Devicekey einfügen
+            "devicekey": JSON.stringify(devkey),
             "devicename": devicename,
             "function": deviceFunction,
-            "users": [ username ], 
+            "users": [username],
 
         }).then((res) => {
             //console.log(res)
@@ -35,13 +35,12 @@ const SetupScreen_2 = ({navigation}) => {
         navigation.reset({
             index: 0,
             routes: [{ name: 'DashboardScreen' }],
-          });
+        });
     }
 
     return (
         // <TouchableWithoutFeedback onPress={Keyboard.dismiss()} >
         <View style={styles.container}>
-
             <Text>Devicename</Text>
             <TextInput
                 style={styles.inputBox}

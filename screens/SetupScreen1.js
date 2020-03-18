@@ -11,7 +11,7 @@ const SetupScreen1 = ({ navigation }) => {
   const [PW, setPW] = useState('')
   const [devicekey, setDevicekey] = useState()
   const [isLoading, setIsLoading] = useState()
-  const [trys, setTrys] = useState(0)
+const trys = 0
   const [key, setKey] = useState()
 
   async function requestLocationPermission() {
@@ -59,32 +59,38 @@ const SetupScreen1 = ({ navigation }) => {
     }
   }
 
+  const otherFunction = () => {
+    
+    try {
+      WifiManager.connectToProtectedSSID(
+        "SMHome",
+        "12345678",
+        false,
+      ).then(() => {
+        console.log('Connected successfully to SMHome!')
+        setKey(1)
+        WifiManager.forceWifiUsage(true)
+      })
+    } catch (error) {
+      if (trys < 10) {
+        console.log('Connection failed!');
+        otherFunction()
+        trys++
+      } else {
+        console.log("Connection failed timeout")
+        Alert.alert("No connection to Device")
+      }
+    }
+  }
+
   switch (key) {
     case 0:
-      try {
-        WifiManager.connectToProtectedSSID(
-          "SMHome",
-          "12345678",
-          false,
-        ).then(() => {
-          console.log('Connected successfully to SMHome!')
-          setKey(1)
-          WifiManager.forceWifiUsage(true)
-        })
-      } catch (error) {
-        if (trys < 10) {
-          console.log('Connection failed!');
-          setKey(1)
-        } else {
-          console.log("Connection failed timeout")
-          setTrys(trys++)
-        }
-      }
+      otherFunction()
       break;
 
     case 1:
       WifiManager.isEnabled(isEnabled => {
-        console.log("Wifi connetction " + isEnabled)
+        console.log("Wifi connetction: " + isEnabled)
         WifiManager.forceWifiUsage(true)
         setTimeout(() => {
           setKey(2)
@@ -96,16 +102,13 @@ const SetupScreen1 = ({ navigation }) => {
       axios.post('http://192.168.1.1:80/body', {
         "SSID": SSID,
         "PW": PW
-      }).then((res) => {
+      }).then(() => {
         WifiManager.getBSSID((call) => {
-          setDevicekey(call)
+          console.log("Screen1 Devicekey: " + call)
+          navigation.navigate("SetupScreen_2", {devkey: call})
         })
-        //setDevicekey(res.data["devicekey"])
-        console.log(devicekey)
         WifiManager.forceWifiUsage(false);
-        WifiManager.disconnect()
-        navigation.navigate("SetupScreen_2")
-
+        WifiManager.disconnect()    
       })
         .catch((error) => {
           if (error == 'Error: Network error') {
@@ -119,6 +122,7 @@ const SetupScreen1 = ({ navigation }) => {
       break;
   }
 
+  
 
   useEffect(() => {
     requestLocationPermission();

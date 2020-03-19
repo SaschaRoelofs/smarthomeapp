@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react'
-import { Image, StyleSheet, Text, View, Button, FlatList, Picker } from 'react-native'
+import { Image, StyleSheet, Text, View, Button, FlatList, Picker, Alert } from 'react-native'
 import axios from 'axios';
 import { TouchableNativeFeedback } from 'react-native-gesture-handler';
 import auth from '@react-native-firebase/auth';
+import messaging from '@react-native-firebase/messaging';
+import { Notifications } from 'react-native-notifications';
+
 import DeviceButton from '../components/DeviceButton';
 
 const DashboardScreen = ({ navigation }) => {
     const [items, setItems] = useState([]);
     const [picker, setPicker] = useState(0)
-
-    //const auth = Firebase.auth()
+    const [firstTime, setFirstTime] = useState(true)
+    const [once, setOnce] = useState(true)
 
     useEffect(() => {
         const intervalId = setInterval(() => {
@@ -29,6 +32,7 @@ const DashboardScreen = ({ navigation }) => {
         }, 200)
         return () => clearInterval(intervalId);
     })
+
 
     const onPressHandler = (devicekey, state) => {
         let stateLap = (state) ? 0 : 1

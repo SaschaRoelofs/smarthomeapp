@@ -3,6 +3,7 @@ import 'react-native-gesture-handler';
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import auth from '@react-native-firebase/auth';
+import messaging from '@react-native-firebase/messaging';
 
 
 import DashboardScreen from './screens/DashboardScreen'
@@ -11,6 +12,7 @@ import SignupScreen from './screens/SignupScreen'
 import SetupScreen1 from './screens/SetupScreen1'
 import SplashScreen from './screens/SplashScreen'
 import SetupScreen_2 from './screens/SetupScreen_2'
+import { Alert } from 'react-native';
 
 
 const AuthStack = createStackNavigator();
@@ -44,55 +46,48 @@ const RootStackScreen = ({ userToken }) => (
 export default () => {
   const [isLoading, setIsLoading] = React.useState(true);
   const [userToken, setUserToken] = React.useState(null);
-  
-    //1
-  // async function checkPermission() {
-  //   const enabled = await Firebase.messaging().hasPermission();
-  //   if (enabled) {
-  //       getToken();
-  //   } else {
-  //       requestPermission();
-  //   }
-  // }
-  
-  //   //3
-  //   async function getToken() {
-  //   let fcmToken = await AsyncStorage.getItem('fcmToken');
-  //   if (!fcmToken) {
-  //       fcmToken = await Firebase.messaging().getToken();
-  //       if (fcmToken) {
-  //           // user has a device token
-  //           await AsyncStorage.setItem('fcmToken', fcmToken);
-  //       }
-  //   }
-  // }
-  
-  //   //2
-  //   async function requestPermission() {
-  //   try {
-  //       await Firebase.messaging().requestPermission();
-  //       // User has authorised
-  //       getToken();
-  //   } catch (error) {
-  //       // User has rejected permissions
-  //       console.log('permission rejected');
-  //   }
+
+  const checkPermission = async () => {
+    const enabled = await messaging().hasPermission();
+    if (enabled) {
+      messaging().getToken();
+    } else {
+      requestPermission();
+    }
+  }
+
+
+  const requestPermission = async () => {
+    const granted = messaging().requestPermission();
+
+    if (granted) {
+      console.log('User granted messaging permissions!');
+
+    } else {
+      console.log('User declined messaging permissions :(');
+    }
+  }
+
+  // const getFcmToken = async () => {
+  //     const fcmToken = await messaging().getToken();
+  //     if (fcmToken) {
+  //         //console.log(fcmToken);
+  //         //showAlert('Your Firebase Token is:', fcmToken);
+  //     } else {
+  //         showAlert('Failed', 'No token received');
+  //     }
   // }
 
-  // async function createNotificationListener() {
-  //   Firebase.notifications().onNotification(notification => {
-  //     notification.android.setChannelId('insider').setSound('default')
-  //     Firebase.notifications().displayNotification(notification)
-  //   })
-  // }
-  
+  const messageListener = async () => {
+    messaging().onMessage((messaging) => {
+      console.log(messaging);
+      //Alert.alert(messaging.data)
+    });
+  }
 
   useEffect(() => {
-    
-    // const channel = new Firebase.notifications.Android.Channel('insider', 'insider channel', Firebase.notifications.Android.Importance.Max)
-    // Firebase.notifications().android.createChannel(channel)
-    // checkPermission();
-    // createNotificationListener();
+    checkPermission();
+    messageListener()
     auth().onIdTokenChanged((user) => {
       //console.log(user)
       if (user) {
@@ -103,20 +98,19 @@ export default () => {
         setIsLoading(false);
         setUserToken(user)
       }
-    });
+    })
 
   }, [])
+
 
   if (isLoading) {
     return <SplashScreen />;
   }
 
   return (
-
-      <NavigationContainer>
-        <RootStackScreen userToken={userToken} />
-      </NavigationContainer>
-
+    <NavigationContainer>
+      <RootStackScreen userToken={userToken} />
+    </NavigationContainer>
   );
-};
+}
 

@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { View, TextInput, StyleSheet, TouchableOpacity, Text } from 'react-native'
+import axios from 'axios';
 import auth from '@react-native-firebase/auth';
+import messaging from '@react-native-firebase/messaging';
 
 function SignupScreen({ navigation }) {
     const [username, setUsername] = useState('');
@@ -9,11 +11,36 @@ function SignupScreen({ navigation }) {
 
     async function handleSignUp() {
         try {
-          await auth().createUserWithEmailAndPassword(username, password);
+            await auth().createUserWithEmailAndPassword(username, password);
+            const fcmToken = await getFcmToken()
+            createUserInDatabase(fcmToken)
         } catch (e) {
-          console.error(e.message);
+            console.error(e.message);
         }
-      }
+    }
+
+    const getFcmToken = async () => {
+        const fcmToken = await messaging().getToken();
+        if (fcmToken) {
+            return fcmToken
+        } else {
+            showAlert('Failed', 'No token received');
+        }
+    }
+
+    const createUserInDatabase = (fcmToken) => {
+
+        axios.post('http://5.181.50.205:4000/create-user', {
+            "email": auth().currentUser.email,
+            "FCMToken": fcmToken,
+        }).then((res) => {
+            //console.log(res)
+        }).catch((error) => {
+            if (error == 'Error: Network error') {
+                Alert.alert('Something went wrong', 'Kindly check if the device is connected to stable cellular data plan or WiFi.');
+            }
+        });
+    }
 
     return (
         <View style={styles.container}>

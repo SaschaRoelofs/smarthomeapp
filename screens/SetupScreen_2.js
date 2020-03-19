@@ -20,7 +20,7 @@ const SetupScreen_2 = ({ navigation, route }) => {
             "devicekey": JSON.stringify(devkey),
             "devicename": devicename,
             "function": deviceFunction,
-            "users": [username],
+            "users": username,
 
         }).then((res) => {
             //console.log(res)

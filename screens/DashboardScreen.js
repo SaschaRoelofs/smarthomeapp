@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react'
-import { Image, StyleSheet, Text, View, Button, FlatList, Picker, Alert } from 'react-native'
+import { Image, StyleSheet, Text, View, Button, FlatList, Picker, Alert, TouchableHighlight } from 'react-native'
 import axios from 'axios';
-import { TouchableNativeFeedback } from 'react-native-gesture-handler';
+import { TouchableNativeFeedback, TextInput } from 'react-native-gesture-handler';
 import auth from '@react-native-firebase/auth';
-import messaging from '@react-native-firebase/messaging';
-import { Notifications } from 'react-native-notifications';
+import Modal, { ModalContent } from 'react-native-modals';
+
 
 import DeviceButton from '../components/DeviceButton';
 
 const DashboardScreen = ({ navigation }) => {
     const [items, setItems] = useState([]);
     const [picker, setPicker] = useState(0)
-    const [firstTime, setFirstTime] = useState(true)
-    const [once, setOnce] = useState(true)
+    const [visible, setVisible] = useState(false)
+    const [shareUser, setShareUser] = useState('')
+    const [devicekey, setDevicekey] = useState('')
+
 
     useEffect(() => {
         const intervalId = setInterval(() => {
@@ -29,9 +31,27 @@ const DashboardScreen = ({ navigation }) => {
                         })
                 }
             });
-        }, 200)
+        }, 1000)
         return () => clearInterval(intervalId);
     })
+    const shareDevice = (visible, devicekey) => {
+        setVisible(visible);
+        setDevicekey(devicekey)
+    }
+
+    const onShareDevice = () => {
+        console.log(devicekey)
+        axios.post('http://5.181.50.205:4000/share-device', {
+            "devicekey": devicekey,
+            "shareUser": shareUser
+        }).then((success) => {
+            console.log(success)
+            setVisible(false)
+        })
+            .catch((error) => {
+                console.log(error)
+            });
+    }
 
 
     const onPressHandler = (devicekey, state) => {
@@ -51,8 +71,66 @@ const DashboardScreen = ({ navigation }) => {
         }
     }
 
+
     return (
         <View style={styles.container}>
+
+            <Modal
+                animationType="slide"
+                transparent={false}
+                visible={visible}
+                onTouchOutside={() => {
+                    setVisible(false)
+                }}>
+                <ModalContent>
+                    <View style={{ width: 260 }}>
+
+                        <Text style={{ paddingHorizontal: 8, fontSize: 20, fontWeight: 'bold', marginBottom: 12 }}>Gerät teilen</Text>
+                        <TextInput
+                            placeholder="E-mailadresse"
+                            style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+                            onChangeText={text => setShareUser(text)}
+                            value={shareUser}
+                        />
+
+                        <TouchableHighlight
+                            style={{
+                                marginTop: 12,
+                                paddingVertical: 5,
+                                alignItems: 'center',
+                                backgroundColor: '#F6820D',
+                                borderColor: '#F6820D',
+                                borderWidth: 1,
+                                borderRadius: 5,
+                                width: '100%'
+                            }}
+                            onPress={() => {
+                                onShareDevice();
+                            }}>
+                            <Text>Gerät teilen</Text>
+                        </TouchableHighlight>
+
+                        <TouchableHighlight
+                            style={{
+                                marginTop: 12,
+                                paddingVertical: 5,
+                                alignItems: 'center',
+                                backgroundColor: '#F6820D',
+                                borderColor: '#F6820D',
+                                borderWidth: 1,
+                                borderRadius: 5,
+                                width: '100%'
+                            }}
+                            onPress={() => {
+                                setVisible(false);
+                            }}>
+                            <Text>Hide Modal</Text>
+                        </TouchableHighlight>
+
+                    </View>
+                </ModalContent>
+            </Modal>
+
             <View style={styles.topBar}>
                 <Text style={styles.title}>Deine Geräte</Text>
                 <Picker
@@ -72,7 +150,7 @@ const DashboardScreen = ({ navigation }) => {
                 data={items}
                 renderItem={({ item }) => (
                     <View style={styles.row}>
-                        <TouchableNativeFeedback onPress={() => onPressHandler(item.devicekey, item.state)}>
+                        <TouchableNativeFeedback onPress={() => onPressHandler(item.devicekey, item.state)} onLongPress={() => { shareDevice(true, item.devicekey) }}>
                             <DeviceButton state={item.state} devicename={item.devicename} />
                         </TouchableNativeFeedback>
                     </View>

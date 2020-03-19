@@ -1,34 +1,34 @@
 {
   "project_info": {
-    "project_number": "337117980505",
-    "firebase_url": "https://test-2e2ca.firebaseio.com",
-    "project_id": "test-2e2ca",
-    "storage_bucket": "test-2e2ca.appspot.com"
+    "project_number": "848671378184",
+    "firebase_url": "https://smart-be644.firebaseio.com",
+    "project_id": "smart-be644",
+    "storage_bucket": "smart-be644.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:337117980505:android:46938b26f66396b2528e48",
+        "mobilesdk_app_id": "1:848671378184:android:86cdf1fa3ba876c41f3abd",
         "android_client_info": {
-          "package_name": "com.awesomeproject"
+          "package_name": "com.smart"
         }
       },
       "oauth_client": [
         {
-          "client_id": "337117980505-8trlveq6m4jlq7mbj5kcvdmfeie39gnd.apps.googleusercontent.com",
+          "client_id": "848671378184-htlc6q2jqje5ij1sruv81btbuaem75va.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDgFcDeXAQnprgH_Juky_OSs82Tlq6YMPA"
+          "current_key": "AIzaSyBoOQ-WfieTTg0CN6k-uF6z7ZIsoJu5wp8"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "337117980505-8trlveq6m4jlq7mbj5kcvdmfeie39gnd.apps.googleusercontent.com",
+              "client_id": "848671378184-htlc6q2jqje5ij1sruv81btbuaem75va.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { Image, StyleSheet, Text, View, Button, FlatList, Picker, Alert, TouchableHighlight } from 'react-native'
+import { Image, StyleSheet, Text, View, Button, FlatList, Picker, Alert, TouchableHighlight, DeviceEventEmitter } from 'react-native'
 import axios from 'axios';
 import { TouchableNativeFeedback, TextInput } from 'react-native-gesture-handler';
 import auth from '@react-native-firebase/auth';
 import Modal, { ModalContent } from 'react-native-modals';
-
+import PushNotification from "react-native-push-notification"
 
 import DeviceButton from '../components/DeviceButton';
 
@@ -14,38 +14,40 @@ const DashboardScreen = ({ navigation }) => {
     const [visible, setVisible] = useState(false)
     const [shareUser, setShareUser] = useState('')
     const [devicekey, setDevicekey] = useState('')
+    const [askFor, setAskFor] = useState('')
+    const [entry, setEntry] = useState('no')
 
+    // Send local Push Notification
+    const localPushNotification = (title, message) => {
+        PushNotification.localNotification({
 
-    useEffect(() => {
-        const intervalId = setInterval(() => {
-            const isFocused = navigation.isFocused();
-            auth().onIdTokenChanged((user) => {
-                //console.log(isFocused)
-                if (user && isFocused) {
-                    axios.get('http://5.181.50.205:4000/data-handler?users=' + auth().currentUser.email)
-                        .then((response) => {
-                            setItems(response.data)
-                        })
-                        .catch((error) => {
-                            console.error(error);
-                        })
-                }
-            });
-        }, 1000)
-        return () => clearInterval(intervalId);
-    })
+            title: title,
+            message: message,
+            actions: '["Akzeptieren", "Ablehnen"]'
+
+        });
+        setAskFor(null)
+        console.log("AskFor empty!" + askFor)
+    }
+    // Share a device
     const shareDevice = (visible, devicekey) => {
         setVisible(visible);
         setDevicekey(devicekey)
     }
 
     const onShareDevice = () => {
-        console.log(devicekey)
+        // console.log("onShareDevice")
+        // console.log(entry)
+        // console.log(devicekey)
+        // console.log(shareUser)
+
         axios.post('http://5.181.50.205:4000/share-device', {
+            "entry": entry,
             "devicekey": devicekey,
-            "shareUser": shareUser
+            "shareUser": shareUser,
+            "askFor": "newDevice"
         }).then((success) => {
-            console.log(success)
+            //console.log(success)
             setVisible(false)
         })
             .catch((error) => {
@@ -53,7 +55,7 @@ const DashboardScreen = ({ navigation }) => {
             });
     }
 
-
+    // Buttpn handlers
     const onPressHandler = (devicekey, state) => {
         let stateLap = (state) ? 0 : 1
         axios.patch("http://5.181.50.205:4000/data-handler", {
@@ -71,6 +73,78 @@ const DashboardScreen = ({ navigation }) => {
         }
     }
 
+    // State request from Server //NormalGET
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            const isFocused = navigation.isFocused();
+            auth().onIdTokenChanged((user) => {
+                //console.log(isFocused)
+                if (user && isFocused) {
+                    axios.get('http://5.181.50.205:4000/data-handler?users=' + auth().currentUser.email)
+                        .then((response) => {
+                            const res = response.data[response.data.length - 1]
+                            setAskFor(res['askFor'])
+                            //console.log(askFor)
+                            response.data.pop()
+                            setItems(response.data)
+                        })
+                        .catch((error) => {
+                            console.error(error);
+                        })
+                }
+            });
+
+            if (askFor == "newDevice") {
+                console.log("Ask Fro otification")
+                axios.get('http://5.181.50.205:4000/notification?user=' + auth().currentUser.email)
+                    .then((response) => {
+                        console.log(response.data)
+                        localPushNotification(response.data.title, response.data.message)
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    })
+            }
+
+            PushNotification.configure({
+                onRegister: function (token) {
+                    console.log("TOKEN:", token);
+                },
+                onNotification: function (notification) {
+                    console.log("NOTIFICATION:", notification);
+                    if (notification.action == "Akzeptieren") {
+                        console.log("accepted")
+                        setEntry('yes')
+                        console.log(entry)
+                        onShareDevice()
+                    } else if (notification.action == 'Ablehnen') {
+                        console.log("rejected")
+                    }
+                    //notification.finish(PushNotificationIOS.FetchResult.NoData);
+                },
+                senderID: "YOUR GCM (OR FCM) SENDER ID",
+                permissions: {
+                    alert: true,
+                    badge: true,
+                    sound: true
+                },
+                popInitialNotification: true,
+                requestPermissions: true
+            });
+
+            PushNotification.registerNotificationActions(['Akzeptieren', 'Ablehnen']);
+            DeviceEventEmitter.addListener('notificationActionReceived', function (action) {
+
+            });
+
+            // console.log("entry " + entry)
+            // console.log("devicekey " + devicekey)
+            // console.log("shareUser " + shareUser)
+
+        }, 1000)
+
+        return () => clearInterval(intervalId);
+    })
 
     return (
         <View style={styles.container}>
@@ -132,7 +206,7 @@ const DashboardScreen = ({ navigation }) => {
             </Modal>
 
             <View style={styles.topBar}>
-                <Text style={styles.title}>Deine Geräte</Text>
+                <Text style={styles.title}>{auth().currentUser.email}</Text>
                 <Picker
                     style={{ height: 50, width: 50 }}
                     selectedValue={picker}
@@ -159,6 +233,7 @@ const DashboardScreen = ({ navigation }) => {
                 showsVerticalScrollIndicator={false}
                 keyExtractor={item => item.devicekey}
             />
+            <Button title="Test" onPress={() => localPushNotification("title", "message")} />
         </View>
     );
 }

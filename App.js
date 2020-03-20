@@ -47,26 +47,26 @@ export default () => {
   const [isLoading, setIsLoading] = React.useState(true);
   const [userToken, setUserToken] = React.useState(null);
 
-  const checkPermission = async () => {
-    const enabled = await messaging().hasPermission();
-    if (enabled) {
-      messaging().getToken();
-    } else {
-      requestPermission();
-    }
-  }
+  // const checkPermission = async () => {
+  //   const enabled = await messaging().hasPermission();
+  //   if (enabled) {
+  //     messaging().getToken();
+  //   } else {
+  //     requestPermission();
+  //   }
+  // }
 
 
-  const requestPermission = async () => {
-    const granted = messaging().requestPermission();
+  // const requestPermission = async () => {
+  //   const granted = messaging().requestPermission();
 
-    if (granted) {
-      console.log('User granted messaging permissions!');
+  //   if (granted) {
+  //     console.log('User granted messaging permissions!');
 
-    } else {
-      console.log('User declined messaging permissions :(');
-    }
-  }
+  //   } else {
+  //     console.log('User declined messaging permissions :(');
+  //   }
+  // }
 
   // const getFcmToken = async () => {
   //     const fcmToken = await messaging().getToken();
@@ -78,16 +78,16 @@ export default () => {
   //     }
   // }
 
-  const messageListener = async () => {
-    messaging().onMessage((messaging) => {
-      console.log(messaging);
-      //Alert.alert(messaging.data)
-    });
-  }
+  // const messageListener = async () => {
+  //   messaging().onMessage((messaging) => {
+  //     console.log(messaging);
+  //     //Alert.alert(messaging.data)
+  //   });
+  // }
 
   useEffect(() => {
-    checkPermission();
-    messageListener()
+    // checkPermission();
+    // messageListener()
     auth().onIdTokenChanged((user) => {
       //console.log(user)
       if (user) {

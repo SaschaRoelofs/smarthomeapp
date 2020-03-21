@@ -12,18 +12,19 @@ const DashboardScreen = ({ navigation }) => {
     const [items, setItems] = useState([]);
     const [picker, setPicker] = useState(0)
     const [visible, setVisible] = useState(false)
-    const [shareUser, setShareUser] = useState('')
-    const [devicekey, setDevicekey] = useState('')
+    const [shareUser, setShareUser] = useState()
+    const [devicekey, setDevicekey] = useState()
     const [askFor, setAskFor] = useState('')
     const [entry, setEntry] = useState('no')
 
     // Send local Push Notification
     const localPushNotification = (title, message) => {
         PushNotification.localNotification({
-
+            id : '1',
             title: title,
             message: message,
-            actions: '["Akzeptieren", "Ablehnen"]'
+            actions: '["Akzeptieren", "Ablehnen"]',
+            autoCancel: true,
 
         });
         setAskFor(null)
@@ -33,16 +34,12 @@ const DashboardScreen = ({ navigation }) => {
     const shareDevice = (visible, devicekey) => {
         setVisible(visible);
         setDevicekey(devicekey)
+        console.log("shareDevice -> Devicekey: " + devicekey)
+
     }
 
     const onShareDevice = () => {
-        // console.log("onShareDevice")
-        // console.log(entry)
-        // console.log(devicekey)
-        // console.log(shareUser)
-
-        axios.post('http://5.181.50.205:4000/share-device', {
-            "entry": entry,
+        axios.post('http://5.181.50.205:4000//share-device-sending', {
             "devicekey": devicekey,
             "shareUser": shareUser,
             "askFor": "newDevice"
@@ -93,57 +90,61 @@ const DashboardScreen = ({ navigation }) => {
                         })
                 }
             });
-
-            if (askFor == "newDevice") {
-                console.log("Ask Fro otification")
-                axios.get('http://5.181.50.205:4000/notification?user=' + auth().currentUser.email)
-                    .then((response) => {
-                        console.log(response.data)
-                        localPushNotification(response.data.title, response.data.message)
-                    })
-                    .catch((error) => {
-                        console.error(error);
-                    })
-            }
-
-            PushNotification.configure({
-                onRegister: function (token) {
-                    console.log("TOKEN:", token);
-                },
-                onNotification: function (notification) {
-                    console.log("NOTIFICATION:", notification);
-                    if (notification.action == "Akzeptieren") {
-                        console.log("accepted")
-                        setEntry('yes')
-                        console.log(entry)
-                        onShareDevice()
-                    } else if (notification.action == 'Ablehnen') {
-                        console.log("rejected")
-                    }
-                    //notification.finish(PushNotificationIOS.FetchResult.NoData);
-                },
-                senderID: "YOUR GCM (OR FCM) SENDER ID",
-                permissions: {
-                    alert: true,
-                    badge: true,
-                    sound: true
-                },
-                popInitialNotification: true,
-                requestPermissions: true
-            });
-
-            PushNotification.registerNotificationActions(['Akzeptieren', 'Ablehnen']);
-            DeviceEventEmitter.addListener('notificationActionReceived', function (action) {
-
-            });
-
-            // console.log("entry " + entry)
-            // console.log("devicekey " + devicekey)
-            // console.log("shareUser " + shareUser)
+            //console.log("useEffect -> Devicekey: " + devicekey)
 
         }, 1000)
 
         return () => clearInterval(intervalId);
+    })
+
+    useEffect(() => {
+
+        if (askFor == "newDevice") {
+            console.log("Ask Fro otification")
+            axios.get('http://5.181.50.205:4000/notification?user=' + auth().currentUser.email)
+                .then((response) => {
+                    //console.log(response.data)
+                    localPushNotification(response.data.title, response.data.message)
+                })
+                .catch((error) => {
+                    console.error(error);
+                })
+            setAskFor()
+        }
+
+        PushNotification.configure({
+            onRegister: function (token) {
+                console.log("TOKEN:", token);
+            },
+            onNotification: function (notification) {
+                //console.log("NOTIFICATION:", notification);
+                if (notification.action == "Akzeptieren") {
+                    console.log("accepted")
+                    axios.get('http://5.181.50.205:4000/share-device-recieving')
+                    PushNotification.cancelLocalNotifications({id: '1'});
+                } else if (notification.action == 'Ablehnen') {
+                    console.log("rejected")
+                }
+                //notification.finish(PushNotificationIOS.FetchResult.NoData);
+            },
+            senderID: "YOUR GCM (OR FCM) SENDER ID",
+            permissions: {
+                alert: true,
+                badge: true,
+                sound: true
+            },
+            popInitialNotification: true,
+            requestPermissions: true
+        });
+
+        PushNotification.registerNotificationActions(['Akzeptieren', 'Ablehnen']);
+        DeviceEventEmitter.addListener('notificationActionReceived', function (action) {
+
+        });
+
+        // console.log("entry " + entry)
+        // console.log("devicekey " + devicekey)
+        // console.log("shareUser " + shareUser)
     })
 
     return (

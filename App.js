@@ -6,12 +6,12 @@ import auth from '@react-native-firebase/auth';
 import messaging from '@react-native-firebase/messaging';
 
 
-import DashboardScreen from './screens/DashboardScreen'
-import LoginScreen from './screens/LoginScreen'
-import SignupScreen from './screens/SignupScreen'
-import SetupScreen1 from './screens/SetupScreen1'
-import SplashScreen from './screens/SplashScreen'
-import SetupScreen_2 from './screens/SetupScreen_2'
+import DashboardScreen from './src/screens/DashboardScreen'
+import LoginScreen from './src/screens/LoginScreen'
+import SignupScreen from './src/screens/SignupScreen'
+import SetupScreen1 from './src/screens/SetupScreen1'
+import SplashScreen from './src/screens/SplashScreen'
+import SetupScreen_2 from './src/screens/SetupScreen_2'
 import { Alert } from 'react-native';
 
 
@@ -44,46 +44,9 @@ const RootStackScreen = ({ userToken }) => (
 );
 
 export default () => {
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [userToken, setUserToken] = React.useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [userToken, setUserToken] = useState(null);
 
-  // const checkPermission = async () => {
-  //   const enabled = await messaging().hasPermission();
-  //   if (enabled) {
-  //     messaging().getToken();
-  //   } else {
-  //     requestPermission();
-  //   }
-  // }
-
-
-  // const requestPermission = async () => {
-  //   const granted = messaging().requestPermission();
-
-  //   if (granted) {
-  //     console.log('User granted messaging permissions!');
-
-  //   } else {
-  //     console.log('User declined messaging permissions :(');
-  //   }
-  // }
-
-  // const getFcmToken = async () => {
-  //     const fcmToken = await messaging().getToken();
-  //     if (fcmToken) {
-  //         //console.log(fcmToken);
-  //         //showAlert('Your Firebase Token is:', fcmToken);
-  //     } else {
-  //         showAlert('Failed', 'No token received');
-  //     }
-  // }
-
-  // const messageListener = async () => {
-  //   messaging().onMessage((messaging) => {
-  //     console.log(messaging);
-  //     //Alert.alert(messaging.data)
-  //   });
-  // }
 
   useEffect(() => {
     // checkPermission();

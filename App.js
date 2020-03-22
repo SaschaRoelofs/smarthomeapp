@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import {StatusBar} from 'react-native'
 import 'react-native-gesture-handler';
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -6,18 +7,22 @@ import auth from '@react-native-firebase/auth';
 import messaging from '@react-native-firebase/messaging';
 
 
-import DashboardScreen from './src/screens/DashboardScreen'
-import LoginScreen from './src/screens/LoginScreen'
-import SignupScreen from './src/screens/SignupScreen'
-import SetupScreen1 from './src/screens/SetupScreen1'
-import SplashScreen from './src/screens/SplashScreen'
-import SetupScreen_2 from './src/screens/SetupScreen_2'
+import DashboardScreen from './screens/DashboardScreen'
+import LoginScreen from './screens/LoginScreen'
+import SignupScreen from './screens/SignupScreen'
+import SetupScreen1 from './screens/SetupScreen_1'
+import SplashScreen from './screens/SplashScreen'
+import SetupScreen_2 from './screens/SetupScreen_2'
 import { Alert } from 'react-native';
+
+//import RootStackScreen from './src/navigations/RootStack'
 
 
 const AuthStack = createStackNavigator();
 const AuthStackScreen = () => (
-  <AuthStack.Navigator>
+  <AuthStack.Navigator screenOptions={{
+    headerShown: false
+  }}>
     <AuthStack.Screen name="LoginScreen" component={LoginScreen} />
     <AuthStack.Screen name="SignupScreen" component={SignupScreen} />
   </AuthStack.Navigator>
@@ -25,7 +30,10 @@ const AuthStackScreen = () => (
 
 const HomeStack = createStackNavigator();
 const HomeStackScreen = () => (
-  <HomeStack.Navigator>
+
+  <HomeStack.Navigator screenOptions={{
+    headerShown: false
+  }}>
     <HomeStack.Screen name="DashboardScreen" component={DashboardScreen} headerMode="none" />
     <HomeStack.Screen name="SetupScreen1" component={SetupScreen1} />
     <HomeStack.Screen name="SetupScreen_2" component={SetupScreen_2} />
@@ -34,7 +42,9 @@ const HomeStackScreen = () => (
 
 const RootStack = createStackNavigator();
 const RootStackScreen = ({ userToken }) => (
-  <RootStack.Navigator headerMode="none">
+  <RootStack.Navigator screenOptions={{
+    headerShown: false
+  }} >
     {userToken ? (
       <RootStack.Screen name="App" component={HomeStackScreen} />
     ) : (
@@ -71,9 +81,9 @@ export default () => {
   }
 
   return (
-    <NavigationContainer>
+
+    <NavigationContainer >
       <RootStackScreen userToken={userToken} />
     </NavigationContainer>
   );
 }
-

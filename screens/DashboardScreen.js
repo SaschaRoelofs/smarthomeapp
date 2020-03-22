@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import { Image, StyleSheet, Text, View, Button, FlatList, Picker, Alert, TouchableHighlight, DeviceEventEmitter } from 'react-native'
+import { Image, StyleSheet, Text, View, FlatList, Picker, TouchableOpacity, DeviceEventEmitter } from 'react-native'
 import axios from 'axios';
 import { TouchableNativeFeedback, TextInput } from 'react-native-gesture-handler';
 import auth from '@react-native-firebase/auth';
 import Modal, { ModalContent } from 'react-native-modals';
 import PushNotification from "react-native-push-notification"
 
-import DeviceButton from '../components/DeviceButton';
+import { Button, DeviceButton } from '../components/Button';
+import { InputEmail } from '../components/Input';
 
 const DashboardScreen = ({ navigation }) => {
     const [items, setItems] = useState([]);
@@ -17,10 +18,12 @@ const DashboardScreen = ({ navigation }) => {
     const [askFor, setAskFor] = useState('')
     const [entry, setEntry] = useState('no')
 
+
+
     // Send local Push Notification
     const localPushNotification = (title, message) => {
         PushNotification.localNotification({
-            id : '1',
+            id: '1',
             title: title,
             message: message,
             actions: '["Akzeptieren", "Ablehnen"]',
@@ -121,7 +124,7 @@ const DashboardScreen = ({ navigation }) => {
                 if (notification.action == "Akzeptieren") {
                     console.log("accepted")
                     axios.get('http://5.181.50.205:4000/share-device-recieving')
-                    PushNotification.cancelLocalNotifications({id: '1'});
+                    PushNotification.cancelLocalNotifications({ id: '1' });
                 } else if (notification.action == 'Ablehnen') {
                     console.log("rejected")
                 }
@@ -158,56 +161,25 @@ const DashboardScreen = ({ navigation }) => {
                     setVisible(false)
                 }}>
                 <ModalContent>
-                    <View style={{ width: 260 }}>
-
-                        <Text style={{ paddingHorizontal: 8, fontSize: 20, fontWeight: 'bold', marginBottom: 12 }}>Gerät teilen</Text>
-                        <TextInput
-                            placeholder="E-mailadresse"
-                            style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
-                            onChangeText={text => setShareUser(text)}
-                            value={shareUser}
-                        />
-
-                        <TouchableHighlight
-                            style={{
-                                marginTop: 12,
-                                paddingVertical: 5,
-                                alignItems: 'center',
-                                backgroundColor: '#F6820D',
-                                borderColor: '#F6820D',
-                                borderWidth: 1,
-                                borderRadius: 5,
-                                width: '100%'
-                            }}
-                            onPress={() => {
-                                onShareDevice();
-                            }}>
-                            <Text>Gerät teilen</Text>
-                        </TouchableHighlight>
-
-                        <TouchableHighlight
-                            style={{
-                                marginTop: 12,
-                                paddingVertical: 5,
-                                alignItems: 'center',
-                                backgroundColor: '#F6820D',
-                                borderColor: '#F6820D',
-                                borderWidth: 1,
-                                borderRadius: 5,
-                                width: '100%'
-                            }}
-                            onPress={() => {
-                                setVisible(false);
-                            }}>
-                            <Text>Hide Modal</Text>
-                        </TouchableHighlight>
-
-                    </View>
+                    <Text style={{ paddingHorizontal: 8, fontSize: 20, fontWeight: 'bold', marginBottom: 12 }}>Gerät teilen</Text>
+                    <InputEmail
+                        onChangeText={text => setShareUser(text)}
+                        value={shareUser}
+                    />
+                    <Button onPress={() => {
+                        onShareDevice();
+                    }}>Gerät teilen
+                        </Button>
+                    <Button onPress={() => {
+                        setVisible(false);
+                    }}>Hide Modal
+                        </Button>
                 </ModalContent>
             </Modal>
 
             <View style={styles.topBar}>
                 <Text style={styles.title}>{auth().currentUser.email}</Text>
+                <Button onPress={() => {auth().signOut();}}>Logout</Button>
                 <Picker
                     style={{ height: 50, width: 50 }}
                     selectedValue={picker}
@@ -220,21 +192,21 @@ const DashboardScreen = ({ navigation }) => {
                 </Picker>
 
             </View>
-            <Button title="Logout" onPress={() => auth().signOut()} />
+            {/* <Button title="Logout" onPress={() => auth().signOut()} /> */}
             <FlatList
                 data={items}
                 renderItem={({ item }) => (
                     <View style={styles.row}>
-                        <TouchableNativeFeedback onPress={() => onPressHandler(item.devicekey, item.state)} onLongPress={() => { shareDevice(true, item.devicekey) }}>
+                        <TouchableOpacity onPress={() => onPressHandler(item.devicekey, item.state)} onLongPress={() => { shareDevice(true, item.devicekey) }}>
                             <DeviceButton state={item.state} devicename={item.devicename} />
-                        </TouchableNativeFeedback>
+                        </TouchableOpacity>
                     </View>
                 )}
                 numColumns={2}
                 showsVerticalScrollIndicator={false}
                 keyExtractor={item => item.devicekey}
             />
-            <Button title="Test" onPress={() => localPushNotification("title", "message")} />
+
         </View>
     );
 }

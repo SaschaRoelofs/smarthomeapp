@@ -3,7 +3,7 @@ import { Alert, StyleSheet, Text, View, TextInput, Button,  } from 'react-native
 import WifiManager from "react-native-wifi-reborn";
 import axios from 'axios';
 
-import SplashScreen from '../screens/SplashScreen'
+import SplashScreen from './SplashScreen'
 
 const SetupScreen1 = ({ navigation }) => {
   const [SSID, setSSID] = useState('')

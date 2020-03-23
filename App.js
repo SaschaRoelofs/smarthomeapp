@@ -13,6 +13,7 @@ import SignupScreen from './screens/SignupScreen'
 import SetupScreen1 from './screens/SetupScreen_1'
 import SplashScreen from './screens/SplashScreen'
 import SetupScreen_2 from './screens/SetupScreen_2'
+import WelcomeScreen from './screens/WelcomeScreen'
 import { Alert } from 'react-native';
 
 //import RootStackScreen from './src/navigations/RootStack'
@@ -24,6 +25,7 @@ const AuthStackScreen = () => (
     headerShown: false
   }}>
     <AuthStack.Screen name="LoginScreen" component={LoginScreen} />
+    <AuthStack.Screen name="WelcomeScreen" component={WelcomeScreen} />
     <AuthStack.Screen name="SignupScreen" component={SignupScreen} />
   </AuthStack.Navigator>
 );

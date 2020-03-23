@@ -1,21 +1,47 @@
 import React, { useState } from 'react'
-import { View, TextInput, StyleSheet, TouchableOpacity, Text } from 'react-native'
+import { View, Image, KeyboardAvoidingView, StyleSheet, StatusBar, ToastAndroid } from 'react-native'
 import axios from 'axios';
 import auth from '@react-native-firebase/auth';
 import messaging from '@react-native-firebase/messaging';
 
-function SignupScreen({ navigation }) {
+import DismissKeyboard from '../components/DismissKeyboard'
+import { InputEmail, InputPassword } from '../components/Input'
+import { Button, TextButton } from '../components/Button'
+import {colors} from '../config/theme'
+import imageLogo from '../assets/images/logo.png'
+import {post} from '../services/POST'
+
+function SignupScreen({ navigation, route }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('')
-
+    const [verifyPassword, setVerifyPassword] = useState('')
+    const [error, setError] = useState(false)
+    const {nickname} = route.params
 
     async function handleSignUp() {
         try {
-            await auth().createUserWithEmailAndPassword(username, password);
-            const fcmToken = await getFcmToken()
-            createUserInDatabase(fcmToken)
+            if (password === verifyPassword) {
+                await auth().createUserWithEmailAndPassword(username, password);
+                const fcmToken = await getFcmToken()
+                createUserInDatabase(fcmToken)
+            } else {
+                console.log("Error")
+                setError(true)
+                ToastAndroid.showWithGravity(
+                    'E-Mail oder Passwort sind falsch. Bitte versuche es nocheinmal',
+                    ToastAndroid.LONG,
+                    ToastAndroid.TOP
+                );
+            }
+
         } catch (e) {
-            console.error(e.message);
+            console.log("Error")
+            setError(true)
+            ToastAndroid.showWithGravity(
+                'E-Mail oder Passwort sind falsch. Bitte versuche es nocheinmal',
+                ToastAndroid.LONG,
+                ToastAndroid.TOP
+            );
         }
     }
 
@@ -29,10 +55,11 @@ function SignupScreen({ navigation }) {
     }
 
     const createUserInDatabase = (fcmToken) => {
-
         axios.post('http://5.181.50.205:4000/create-user', {
+            "nickname": nickname,
             "email": auth().currentUser.email,
             "FCMToken": fcmToken,
+            "askFor": ''
         }).then((res) => {
             //console.log(res)
         }).catch((error) => {
@@ -43,25 +70,45 @@ function SignupScreen({ navigation }) {
     }
 
     return (
-        <View style={styles.container}>
-            <TextInput
-                style={styles.inputBox}
-                value={username}
-                onChangeText={username => setUsername(username)}
-                placeholder='Email'
-                autoCapitalize='none'
-            />
-            <TextInput
-                style={styles.inputBox}
-                value={password}
-                onChangeText={password => setPassword(password)}
-                placeholder='Password'
-                secureTextEntry={true}
-            />
-            <TouchableOpacity style={styles.button} onPress={() => handleSignUp()}>
-                <Text style={styles.buttonText}>Signup</Text>
-            </TouchableOpacity>
-        </View>
+
+        <DismissKeyboard >
+            <KeyboardAvoidingView style={styles.container}>
+                <StatusBar
+                    backgroundColor="#FFFFFF"
+                    barStyle="dark-content"
+                />
+                <Image source={imageLogo} style={styles.logo} />
+                <View style={styles.form}>
+
+                    <InputEmail
+                        value={username}
+                        onChangeText={username => setUsername(username)}
+                        error={error}
+                        placeholder="E-Mail"
+                    />
+                    <InputPassword
+                        value={password}
+                        onChangeText={password => setPassword(password)}
+                        error={error}
+                        placeholder="Password"
+                    />
+                    <InputPassword
+                        value={verifyPassword}
+                        onChangeText={verifyPassword => setVerifyPassword(verifyPassword)}
+                        error={error}
+                        placeholder="Password bestätigen"
+                    />
+
+                    <Button
+                        title="Login"
+                        onPress={() => handleSignUp()}
+                        disabled={!username || !password || !verifyPassword}
+                    />
+
+
+                </View>
+            </KeyboardAvoidingView>
+        </DismissKeyboard>
     )
 
 }
@@ -69,38 +116,22 @@ function SignupScreen({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center'
+        backgroundColor: colors.WHITE,
+        alignItems: "center",
+        justifyContent: "space-between"
     },
-    inputBox: {
-        width: '85%',
-        margin: 10,
-        padding: 15,
-        fontSize: 16,
-        borderColor: '#d3d3d3',
-        borderBottomWidth: 1,
-        textAlign: 'center'
+    logo: {
+        flex: 1,
+        width: "100%",
+        resizeMode: 'contain',
+        alignSelf: "center",
+
     },
-    button: {
-        marginTop: 30,
-        marginBottom: 20,
-        paddingVertical: 5,
-        alignItems: 'center',
-        backgroundColor: '#FFA611',
-        borderColor: '#FFA611',
-        borderWidth: 1,
-        borderRadius: 5,
-        width: 200
-    },
-    buttonText: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: '#fff'
-    },
-    buttonSignup: {
-        fontSize: 12
+    form: {
+        flex: 1,
+        justifyContent: "center",
+        width: "80%",
     }
-})
+});
 
 export default SignupScreen

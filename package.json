@@ -19,6 +19,7 @@
     "axios": "^0.19.2",
     "react": "16.9.0",
     "react-native": "0.61.5",
+    "react-native-android-iconify": "^1.0.4",
     "react-native-gesture-handler": "^1.6.0",
     "react-native-modals": "^0.19.9",
     "react-native-notifications": "^3.1.2",
@@ -26,6 +27,7 @@
     "react-native-safe-area-context": "^0.7.3",
     "react-native-screens": "^2.3.0",
     "react-native-shadow-cards": "^1.0.2",
+    "react-native-vector-icons": "^6.6.0",
     "react-native-wifi-reborn": "^3.0.0",
     "react-navigation": "^4.3.1"
   },

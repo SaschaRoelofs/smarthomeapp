@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { StyleSheet, TextInput, View, Text } from 'react-native'
 
-import colors from "../config/colors";
+import {colors} from "../config/theme";
 
-const InputEmail = ({ onChangeText, value, error }) => {
+const InputEmail = ({ onChangeText, value, error, placeholder }) => {
     const [isFocused, setIsFocused] = useState(false)
 
     return (
@@ -15,7 +15,7 @@ const InputEmail = ({ onChangeText, value, error }) => {
                     error
                         ? colors.TORCH_RED
                         : isFocused
-                            ? colors.DODGER_BLUE
+                            ? colors.BLUE
                             : colors.LIGHT_GRAY
                 }
                 onFocus={() => setIsFocused(true)}
@@ -24,12 +24,12 @@ const InputEmail = ({ onChangeText, value, error }) => {
                     error
                         ? colors.TORCH_RED
                         : isFocused
-                            ? colors.DODGER_BLUE
+                            ? colors.BLUE
                             : colors.LIGHT_GRAY
                 }
 
                 //Funktion
-                placeholder="E-mail"
+                placeholder={placeholder}
                 onChangeText={onChangeText}
                 value={value}
                 autoCapitalize='none'
@@ -54,7 +54,7 @@ const InputPassword = ({ onChangeText, value, error, placeholder }) => {
                     error
                         ? colors.TORCH_RED
                         : isFocused
-                            ? colors.DODGER_BLUE
+                            ? colors.BLUE
                             : colors.LIGHT_GRAY
                 }
                 onFocus={() => setIsFocused(true)}
@@ -63,7 +63,7 @@ const InputPassword = ({ onChangeText, value, error, placeholder }) => {
                     error
                         ? colors.TORCH_RED
                         : isFocused
-                            ? colors.DODGER_BLUE
+                            ? colors.BLUE
                             : colors.LIGHT_GRAY
                 }
                 //Funktion

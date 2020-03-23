@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { Image, View, StatusBar, StyleSheet, SafeAreaView, ToastAndroid, PermissionsAndroid, KeyboardAvoidingView, Keyboard } from 'react-native'
+import { Image, View, StatusBar, StyleSheet, ToastAndroid, PermissionsAndroid, KeyboardAvoidingView } from 'react-native'
 import auth from '@react-native-firebase/auth';
 
 import DismissKeyboard from '../components/DismissKeyboard'
 import { InputEmail, InputPassword } from '../components/Input'
 import { Button, TextButton } from '../components/Button'
-import colors from '../config/colors'
+import {colors} from '../config/theme'
 import imageLogo from '../assets/images/logo.png'
 
 
@@ -69,7 +69,7 @@ function LoginScreen({ navigation }) {
             ToastAndroid.showWithGravity(
                 'E-Mail oder Passwort sind falsch. Bitte versuche es nocheinmal',
                 ToastAndroid.LONG,
-                ToastAndroid.BOTTOM
+                ToastAndroid.TOP
             );
         }
     }
@@ -93,6 +93,7 @@ function LoginScreen({ navigation }) {
                         value={username}
                         onChangeText={username => setUsername(username)}
                         error={error}
+                        placeholder="E-Mail"
                     />
                     <InputPassword
                         value={password}
@@ -108,7 +109,7 @@ function LoginScreen({ navigation }) {
                     />
                     <TextButton
                         title="Don't have an account yet? Sign up"
-                        onPress={() => navigation.navigate('SignupScreen')}
+                        onPress={() => navigation.navigate('WelcomeScreen')}
                         disabled={false}
                     />
 

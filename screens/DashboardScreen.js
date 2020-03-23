@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react'
-import { Image, StyleSheet, Text, View, FlatList, Picker, TouchableOpacity, DeviceEventEmitter } from 'react-native'
+import { StatusBar, StyleSheet, Text, View, FlatList, Image, TouchableOpacity, DeviceEventEmitter, Dimensions } from 'react-native'
 import axios from 'axios';
-import { TouchableNativeFeedback, TextInput } from 'react-native-gesture-handler';
 import auth from '@react-native-firebase/auth';
-import Modal, { ModalContent } from 'react-native-modals';
+//import Modal, { ModalContent } from 'react-native-modals';
 import PushNotification from "react-native-push-notification"
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Card } from 'react-native-shadow-cards';
 
 import { Button, DeviceButton } from '../components/Button';
-import { InputEmail } from '../components/Input';
+import { colors, fonts } from '../config/theme'
+import garageOffen from '../assets/images/garageOffen.png'
+
 
 const DashboardScreen = ({ navigation }) => {
     const [items, setItems] = useState([]);
@@ -16,9 +19,7 @@ const DashboardScreen = ({ navigation }) => {
     const [shareUser, setShareUser] = useState()
     const [devicekey, setDevicekey] = useState()
     const [askFor, setAskFor] = useState('')
-    const [entry, setEntry] = useState('no')
-
-
+    const [nickname, setNickname] = useState('')
 
     // Send local Push Notification
     const localPushNotification = (title, message) => {
@@ -33,6 +34,7 @@ const DashboardScreen = ({ navigation }) => {
         setAskFor(null)
         console.log("AskFor empty!" + askFor)
     }
+
     // Share a device
     const shareDevice = (visible, devicekey) => {
         setVisible(visible);
@@ -42,7 +44,7 @@ const DashboardScreen = ({ navigation }) => {
     }
 
     const onShareDevice = () => {
-        axios.post('http://5.181.50.205:4000//share-device-sending', {
+        axios.post('http://5.181.50.205:4000/share-device-sending', {
             "devicekey": devicekey,
             "shareUser": shareUser,
             "askFor": "newDevice"
@@ -80,10 +82,13 @@ const DashboardScreen = ({ navigation }) => {
             auth().onIdTokenChanged((user) => {
                 //console.log(isFocused)
                 if (user && isFocused) {
+
                     axios.get('http://5.181.50.205:4000/data-handler?users=' + auth().currentUser.email)
                         .then((response) => {
                             const res = response.data[response.data.length - 1]
                             setAskFor(res['askFor'])
+                            response.data.pop()
+                            setNickname(res['nickname'])
                             //console.log(askFor)
                             response.data.pop()
                             setItems(response.data)
@@ -93,15 +98,12 @@ const DashboardScreen = ({ navigation }) => {
                         })
                 }
             });
-            //console.log("useEffect -> Devicekey: " + devicekey)
-
-        }, 1000)
+        }, 100)
 
         return () => clearInterval(intervalId);
     })
 
     useEffect(() => {
-
         if (askFor == "newDevice") {
             console.log("Ask Fro otification")
             axios.get('http://5.181.50.205:4000/notification?user=' + auth().currentUser.email)
@@ -144,69 +146,53 @@ const DashboardScreen = ({ navigation }) => {
         DeviceEventEmitter.addListener('notificationActionReceived', function (action) {
 
         });
-
-        // console.log("entry " + entry)
-        // console.log("devicekey " + devicekey)
-        // console.log("shareUser " + shareUser)
     })
 
     return (
         <View style={styles.container}>
-
-            <Modal
-                animationType="slide"
-                transparent={false}
-                visible={visible}
-                onTouchOutside={() => {
-                    setVisible(false)
-                }}>
-                <ModalContent>
-                    <Text style={{ paddingHorizontal: 8, fontSize: 20, fontWeight: 'bold', marginBottom: 12 }}>Gerät teilen</Text>
-                    <InputEmail
-                        onChangeText={text => setShareUser(text)}
-                        value={shareUser}
-                    />
-                    <Button onPress={() => {
-                        onShareDevice();
-                    }}>Gerät teilen
-                        </Button>
-                    <Button onPress={() => {
-                        setVisible(false);
-                    }}>Hide Modal
-                        </Button>
-                </ModalContent>
-            </Modal>
-
-            <View style={styles.topBar}>
-                <Text style={styles.title}>{auth().currentUser.email}</Text>
-                <Button onPress={() => {auth().signOut();}}>Logout</Button>
-                <Picker
-                    style={{ height: 50, width: 50 }}
-                    selectedValue={picker}
-                    onValueChange={(itemValue) => {
-                        setPicker(itemValue)
-                        _handleOnSelect(itemValue)
-                    }}>
-                    <Picker.Item label="Device" value="0" />
-                    <Picker.Item label="Routine" value="1" />
-                </Picker>
-
-            </View>
-            {/* <Button title="Logout" onPress={() => auth().signOut()} /> */}
-            <FlatList
-                data={items}
-                renderItem={({ item }) => (
-                    <View style={styles.row}>
-                        <TouchableOpacity onPress={() => onPressHandler(item.devicekey, item.state)} onLongPress={() => { shareDevice(true, item.devicekey) }}>
-                            <DeviceButton state={item.state} devicename={item.devicename} />
-                        </TouchableOpacity>
-                    </View>
-                )}
-                numColumns={2}
-                showsVerticalScrollIndicator={false}
-                keyExtractor={item => item.devicekey}
+            <StatusBar
+                backgroundColor="#FFFFFF"
+                barStyle="dark-content"
             />
+            <View>
+                <Button
+                    title="Logout"
+                    onPress={() => auth().signOut()}
 
+                />
+                <View style={styles.topBar}>
+                    <Text style={fonts.hello}>Wilkommen</Text>
+                    <Text >{nickname}</Text>
+                </View>
+                <View style={styles.mainDevice}>
+                    <View style={styles.column}>
+                        {/* <Text>{items[0].devicename}</Text> */}
+                        {/* <Image source={garageOffen} style={{ width: 150, height: 150 }} /> */}
+                    </View>
+                    <View style={styles.mainDeviceData}>
+                        {/* <Text>Status: {items[0].state ? "offen" : "geschlossen"}</Text> */}
+                        <Text>Letzte Aktivität: </Text>
+                        <Text>Benutzer: </Text>
+                        {/* <Icon name="garage" size={50} color={colors.LIGHT_GRAY} /> */}
+                    </View>
+                </View>
+            </View>
+            <View style={styles.flatlist}>
+                <FlatList
+                    data={items}
+                    columnWrapperStyle
+                    renderItem={({ item }) => (
+                        <View style={styles.row}>
+                            <TouchableOpacity onPress={() => onPressHandler(item.devicekey, item.state)} onLongPress={() => { shareDevice(true, item.devicekey) }}>
+                                <DeviceButton state={item.state} devicename={item.devicename} />
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                    numColumns={2}
+                    showsVerticalScrollIndicator={false}
+                    keyExtractor={item => item.devicekey}
+                />
+            </View>
         </View>
     );
 }
@@ -216,11 +202,18 @@ export default DashboardScreen
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        flexDirection: "column"
+        flexDirection: "column",
+        backgroundColor: colors.WHITE,
     },
     row: {
         flex: 1,
-        flexDirection: "row",
+        alignContent: "center",
+        paddingBottom: 15,
+        paddingHorizontal: 15,
+    },
+    column: {
+        flex: 1,
+        flexDirection: "column",
         justifyContent: "space-evenly",
     },
     title: {
@@ -228,19 +221,23 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         paddingTop: 12
     },
+    topBarCard: {
+        height: Dimensions.get('window').height / 3,
+        width: "90%",
+        alignSelf: "center",
+        padding: 12
+    },
     topBar: {
+        flexDirection: "column",
+    },
+    mainDevice: {
         flexDirection: "row",
-        justifyContent: "space-between",
-        padding: 5,
-
-
+        justifyContent: "space-between"
     },
-    addButton: {
-        width: 50,
-        height: 50,
-        padding: 18,
-        backgroundColor: '#fab'
-    },
+    flatlist: {
+        width: "90%",
+        justifyContent: "space-between"
+    }
 
 });
 

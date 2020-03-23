@@ -1,35 +1,26 @@
 {
   "project_info": {
-    "project_number": "848671378184",
-    "firebase_url": "https://smart-be644.firebaseio.com",
-    "project_id": "smart-be644",
-    "storage_bucket": "smart-be644.appspot.com"
+
   },
   "client": [
     {
-      "client_info": {
-        "mobilesdk_app_id": "1:848671378184:android:86cdf1fa3ba876c41f3abd",
-        "android_client_info": {
-          "package_name": "com.smart"
+
         }
       },
       "oauth_client": [
         {
-          "client_id": "848671378184-htlc6q2jqje5ij1sruv81btbuaem75va.apps.googleusercontent.com",
-          "client_type": 3
+
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBoOQ-WfieTTg0CN6k-uF6z7ZIsoJu5wp8"
+
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
-            {
-              "client_id": "848671378184-htlc6q2jqje5ij1sruv81btbuaem75va.apps.googleusercontent.com",
-              "client_type": 3
+
             }
           ]
         }
